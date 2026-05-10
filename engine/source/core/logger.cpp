@@ -1,13 +1,16 @@
 #include "logger.h"
+#include "asserts.h"
 
 // TODO: temporary.
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 
-#include "assert.h"
+void report_assertion_failure(const char* expression, const char* message, const char* file, i32 line){
+    logger_output(LOG_LEVEL_FATAL, "Assertion Failure: %s, message: '%s', in file: %s, line: %d\n", expression, message, file, line);
+}
 
-CAL_b8 logger_init()
+b8 logger_init()
 {
     // TODO:  create log file.
     return TRUE;
@@ -35,7 +38,7 @@ void logger_output(log_level level, const char* message, ...){
         "[TRACE]: "
     };
 
-    // CAL_b8 const is_error = level < 2;
+    // b8 const is_error = level < 2;
 
     char out_message[32000];
     memset(out_message, 0, sizeof(out_message));
@@ -57,8 +60,4 @@ void logger_output(log_level level, const char* message, ...){
     printf("%s", final_message);
 
     // TODO: output it to a file, later.
-}
-
-void report_assertion_failure(const char* expression, const char* message, const char* file, CAL_i32 line){
-    logger_output(LOG_LEVEL_FATAL, "Assertion Failure: %s, message: '%s', in file: %s, line: %d\n", expression, message, file, line);
 }
