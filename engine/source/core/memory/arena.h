@@ -1,0 +1,29 @@
+#pragma once
+
+/*
+* Inspired by: https://andreleite.com/posts/2025/nstl/virtual-memory-arena-allocator/
+*/
+
+#include "defines.h"
+
+#include "core/logger.h"
+#include "cal_memory.h"
+
+struct arena_t;
+
+#define ARENA_PTR arena_t*
+
+struct arena_t{
+    u8* base_ptr;
+    u64 reserved_size; // This is the reserved size of the arena (e.g., 1GB)
+    u64 commited_size; // This is the size of the arena that is currently commited (e.g., 256MB)    
+    u64 current_offset; // This is the offset of the next allocation
+};
+
+// Create the area.
+// This function reserves virtual memory for the arena and initializes its metadata.
+CALDERA_API ARENA_PTR arena_initialize(u64 reserve_size);
+CALDERA_API VOID_PTR arena_allocate(ARENA_PTR arena, u64 size);
+
+CALDERA_API void arena_reset(ARENA_PTR arena);
+CALDERA_API void arena_terminate(ARENA_PTR arena);

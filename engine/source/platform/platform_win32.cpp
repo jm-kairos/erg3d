@@ -131,6 +131,21 @@ b8 platform_pump_messages(platform_state* plat_state){
     return TRUE;
 }
 
+VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size){
+    return VirtualAlloc(starting_adress, commit_size, MEM_COMMIT, PAGE_READWRITE);
+}
+
+VOID_PTR platform_allocate_virtual_memory_reserve(u64 reserve_size){
+    return VirtualAlloc(NULL, reserve_size, MEM_RESERVE, PAGE_NOACCESS);
+}
+
+void platform_virtual_free(VOID_PTR block, u64 size)
+{
+    // If lpAddress is the base address returned by VirtualAlloc and dwSize is 0 (zero), the function decommits the entire region that is allocated by VirtualAlloc. 
+    // After that, the entire region is in the reserved state.
+    VirtualFree(block, size, MEM_RELEASE);
+}
+
 VOID_PTR platform_allocate(u64 size, b8 aligned){
     return malloc(size);
 }

@@ -18,6 +18,12 @@ void platform_terminate(platform_state* plat_state);
 
 b8 platform_pump_messages(platform_state* plat_state);
 
+VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size);
+
+VOID_PTR platform_allocate_virtual_memory_reserve(u64 reserve_size);
+
+void platform_virtual_free(VOID_PTR block, u64 size);
+
 VOID_PTR platform_allocate(u64 size, b8 aligned);
 void platform_free(VOID_PTR block, b8 aligned);
 VOID_PTR platform_zero_memory(VOID_PTR block, u64 size);

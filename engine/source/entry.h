@@ -2,7 +2,7 @@
 
 #include "core/application.h"
 #include "core/logger.h"
-#include "core/cal_memory.h"
+#include "core/memory/cal_memory.h"
 #include "game_types.h"
 
 // Externally-defined function to create a game
