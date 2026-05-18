@@ -30,7 +30,7 @@ typedef enum memory_tag{
 CALDERA_API void cal_memory_initialize();
 CALDERA_API void cal_memory_terminate();
 
-CALDERA_API VOID_PTR cal_memory_allocator_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size);
+CALDERA_API VOID_PTR cal_memory_allocator_virtual_memory_commit(VOID_PTR block, u64 commit_size);
 CALDERA_API VOID_PTR cal_memory_allocator_virtual_memory_reserve(u64 reserve_size);
 CALDERA_API void cal_memory_virtual_free(VOID_PTR block, u64 size);
 

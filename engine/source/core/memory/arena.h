@@ -4,6 +4,8 @@
 * Inspired by: https://andreleite.com/posts/2025/nstl/virtual-memory-arena-allocator/
 */
 
+// TODO: in cal_memory.h, include statistic concerning arena allocation.
+
 #include "defines.h"
 
 #include "core/logger.h"

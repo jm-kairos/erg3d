@@ -1,7 +1,5 @@
 #pragma once
 
-#include "defines.h"
-#include "core/memory/cal_memory.h"
+#include <vector>
 
-
-
+#define Vector(_data_type) std::vector<_data_type>

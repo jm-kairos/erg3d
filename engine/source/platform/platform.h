@@ -6,7 +6,7 @@ typedef struct platform_state{
     VOID_PTR internal_state; // type of this will be determined on the particular implementation on the cpp file
 } platform_state;
 
-b8 platform_init(
+b8 platform_initialize(
     platform_state* plat_state,
     const char* app_name,
     i32 x,
@@ -18,7 +18,7 @@ void platform_terminate(platform_state* plat_state);
 
 b8 platform_pump_messages(platform_state* plat_state);
 
-VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size);
+VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR block, u64 commit_size);
 
 VOID_PTR platform_allocate_virtual_memory_reserve(u64 reserve_size);
 

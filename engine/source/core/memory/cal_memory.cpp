@@ -45,9 +45,9 @@ void cal_memory_terminate(){
     // CleanUp allocations.
 }
 
-VOID_PTR cal_memory_allocator_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size)
+VOID_PTR cal_memory_allocator_virtual_memory_commit(VOID_PTR block, u64 commit_size)
 {
-    return platform_allocate_virtual_memory_commit(starting_adress, commit_size);
+    return platform_allocate_virtual_memory_commit(block, commit_size);
 }
 
 VOID_PTR cal_memory_allocator_virtual_memory_reserve(u64 reserve_size)

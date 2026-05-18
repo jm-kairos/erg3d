@@ -1,13 +1,16 @@
 #include "platform.h"
 
-#include "core/logger.h"
-
 // Windows platform layer.
 #if CAL_PLATFORM_WINDOWS
+
+#include "core/logger.h"
+#include "core/input.h"
 
 #include <windows.h>
 #include <windowsx.h> // param input extraction
 #include <stdlib.h>
+
+#include <iostream>
 
 typedef struct internal_state{
     HINSTANCE h_instance;
@@ -19,7 +22,7 @@ static LARGE_INTEGER start_time;
 
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param);
 
-b8 platform_init(
+b8 platform_initialize(
     platform_state* plat_state,
     const char* app_name,
     i32 x,
@@ -131,8 +134,8 @@ b8 platform_pump_messages(platform_state* plat_state){
     return TRUE;
 }
 
-VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR starting_adress, u64 commit_size){
-    return VirtualAlloc(starting_adress, commit_size, MEM_COMMIT, PAGE_READWRITE);
+VOID_PTR platform_allocate_virtual_memory_commit(VOID_PTR block, u64 commit_size){
+    return VirtualAlloc(block, commit_size, MEM_COMMIT, PAGE_READWRITE);
 }
 
 VOID_PTR platform_allocate_virtual_memory_reserve(u64 reserve_size){
@@ -202,6 +205,7 @@ void platform_sleep(u64 ms){
 }
 
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param){
+    using namespace std;
     switch (msg)
     {
         case WM_ERASEBKGND:
@@ -227,25 +231,27 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
         case WM_SYSKEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYUP:{
-            // Key pressed/released
-            // b8 pressed = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
-            // TODO: input processing
+            b8 pressed = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+            keys key = static_cast<keys>(w_param); 
+            input_process_key(key, pressed);
 
         } break;
         case WM_MOUSEMOVE:{
             // Mouse move
-            // i32 x_position = GET_X_LPARAM(l_param);
-            // i32 y_position = GET_Y_LPARAM(l_param);
-            // TODO: input processing
+            i32 x_position = GET_X_LPARAM(l_param);
+            i32 y_position = GET_Y_LPARAM(l_param);
 
+            // Pass over to the input subsystem
+            input_process_mouse_move(x_position, y_position);
         } break;
         case WM_MOUSEWHEEL:{
-            // i32 z_delta = GET_WHEEL_DELTA_WPARAM(w_param);
-            // if (z_delta != 0)
-            // {
-            //     // Flatten the inpute to an OS-independent (-1,1)
-            //     z_delta = (z_delta < 0) ? -1 : 1;
-            // }
+            i32 z_delta = GET_WHEEL_DELTA_WPARAM(w_param);
+            if (z_delta != 0)
+            {
+                // Flatten the inpute to an OS-independent (-1,1)
+                z_delta = (z_delta < 0) ? -1 : 1;
+                input_process_mouse_wheel(z_delta);
+            }
 
         } break;
         case WM_LBUTTONDOWN:
@@ -254,9 +260,30 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
         case WM_LBUTTONUP:
         case WM_MBUTTONUP:
         case WM_RBUTTONUP: {
-            // b8 pressed = msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN;
+            b8 pressed = msg == WM_LBUTTONDOWN || msg == WM_RBUTTONDOWN || msg == WM_MBUTTONDOWN;
             // TODO: input processing
+            buttons mouse_button = BUTTON_MAX_BUTTONS;
+            switch (msg)
+            {
+            case WM_LBUTTONDOWN:
+            case WM_LBUTTONUP:
+                mouse_button = BUTTON_LEFT;
+                break;
+            case WM_MBUTTONDOWN:
+            case WM_MBUTTONUP:
+                mouse_button = BUTTON_MIDDLE;
+                break;
+            case WM_RBUTTONDOWN:
+            case WM_RBUTTONUP:
+                mouse_button = BUTTON_RIGHT;
+                break;
+            default:
+                break;
+            }
 
+            if (mouse_button != BUTTON_MAX_BUTTONS)
+                input_process_button(mouse_button, pressed);
+            
         } break;
     }
 
