@@ -10,6 +10,7 @@ static THIS_RENDERER_SERVER_PTR renderer_server = { };
 
 b8 renderer_initialize(const char* app_name, platform_state* plat_state){
     renderer_server = (RendererServer*)cal_memory_allocator(sizeof(RendererServer), MEMORY_TAG_RENDERER);
+    
     // TODO: this shall be configurable
     renderer_server_create(RENDERER_SERVER_TYPE_VULKAN, plat_state, renderer_server);
     
