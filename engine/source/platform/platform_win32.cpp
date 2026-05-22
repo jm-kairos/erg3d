@@ -12,6 +12,7 @@
 
 #include <iostream>
 
+#include "renderer/vulkan/vulkan_platform.h"
 typedef struct internal_state{
     HINSTANCE h_instance;
     HWND hwnd;
@@ -202,6 +203,10 @@ real platform_get_absolute_time(){
 
 void platform_sleep(u64 ms){
     Sleep(ms);
+}
+
+void platform_get_required_extension_names(Vector(const char*)& ext_names_vector){
+    ext_names_vector.push_back( "VK_KHR_win32_surface" );
 }
 
 LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARAM l_param){
