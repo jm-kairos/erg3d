@@ -1,4 +1,4 @@
-# Erg3D 
+# Ibex3D 
 A Vulkan based C/C++ game engine to support 3D space simulation games.
 
 ## dev log

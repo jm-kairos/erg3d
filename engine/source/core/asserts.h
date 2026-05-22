@@ -2,9 +2,9 @@
 
 #include "defines.h"
 
-#define ERG_ASSERTIONS_ENABLED
+#define IBX_ASSERTIONS_ENABLED
 
-#ifdef ERG_ASSERTIONS_ENABLED
+#ifdef IBX_ASSERTIONS_ENABLED
 // If we are using the VS compiler
 #if _MSC_VER
 // Clang on windows does in fact support some of the MS extensions
@@ -21,9 +21,9 @@
     file: name of the code file where the assertion was raised.
     line: line within the file, where the assertion was raised.
 */
-erg__api__ void report_assertion_failure(const char* expression, const char* message, const char* file, i32 line);
+ibx__api__ void report_assertion_failure(const char* expression, const char* message, const char* file, i32 line);
 
-#define ERG_ASSERT(expr)                                            \
+#define IBX_ASSERT(expr)                                            \
     {                                                               \
         if(expr){                                                   \
                                                                     \
@@ -32,7 +32,7 @@ erg__api__ void report_assertion_failure(const char* expression, const char* mes
             debugBreak();                                           \
         }                                                           \
     }          
-#define ERG_ASSERT_MSG(expr, message)                                    \
+#define IBX_ASSERT_MSG(expr, message)                                    \
     {                                                                    \
         if(expr){                                                        \
                                                                          \
@@ -42,8 +42,8 @@ erg__api__ void report_assertion_failure(const char* expression, const char* mes
         }                                                                \
     }   
 
-#ifdef ERG_DEBUG
-#define ERG_ASSERT_DEBUG(expr)                                           \
+#ifdef IBX_DEBUG
+#define IBX_ASSERT_DEBUG(expr)                                           \
     {                                                                    \
         if(expr){                                                        \
                                                                          \
@@ -53,12 +53,12 @@ erg__api__ void report_assertion_failure(const char* expression, const char* mes
         }                                                                \
     } 
 #else
-#define ERG_ASSERT_DEBUG(expr) // Does nothing
+#define IBX_ASSERT_DEBUG(expr) // Does nothing
 #endif
 
 #else
-#define ERG_ASSERT(expr)
-#define ERG_ASSERT_MSG(expr)
-#define ERG_ASSERT_DEBUG(expr)
+#define IBX_ASSERT(expr)
+#define IBX_ASSERT_MSG(expr)
+#define IBX_ASSERT_DEBUG(expr)
 #endif
 

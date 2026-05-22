@@ -20,7 +20,7 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     app_info.pNext = 0;
     app_info.pApplicationName = app_name;
     app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);;
-    app_info.pEngineName = "Erg Engine";
+    app_info.pEngineName = "Ibex Engine";
     app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     app_info.apiVersion = VK_API_VERSION_1_2;
 
@@ -41,14 +41,14 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     // Get platform specific extensions.
     platform_get_required_extension_names(required_extensions);
 
-#if defined(ERG_DEBUG)
+#if defined(IBX_DEBUG)
     required_extensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME ); // Debug utilities.
 
-    ERG_LOG_DEBUG("Required extensions:");
+    IBX_LOG_DEBUG("Required extensions:");
     const size_t length = required_extensions.size();
 
     for (size_t i = 0; i < length; i++)
-        ERG_LOG_DEBUG(required_extensions[i])
+        IBX_LOG_DEBUG(required_extensions[i])
 
 #endif
 
@@ -56,9 +56,9 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     create_instance_info.ppEnabledExtensionNames = required_extensions.data();
 
     VkResult result = vkCreateInstance(&create_instance_info, context.allocator, &context.instance);
-    ERG_VULKAN_EVALUATE_ERROR(result)
+    IBX_VULKAN_EVALUATE_ERROR(result)
 
-    ERG_LOG_INFO("Vulkan renderer initialized successfully.")
+    IBX_LOG_INFO("Vulkan renderer initialized successfully.")
     return TRUE;
 }
 
