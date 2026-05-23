@@ -42,7 +42,7 @@ b8 vulkan_device_create(VulkanContext* context){
     if (!vulkan_select_physical_device(context)){
         return FALSE;
     }
-    
+
     return TRUE;
 }
 
@@ -53,8 +53,8 @@ void vulkan_device_release(VulkanContext* context){
 
 b8 vulkan_check_physical_device_suitability(const VkPhysicalDevice device){
     VkPhysicalDeviceProperties properties;
-    vkGetPhysicalDeviceProperties(device, &properties);
     VkPhysicalDeviceFeatures features;
+    vkGetPhysicalDeviceProperties(device, &properties);
     vkGetPhysicalDeviceFeatures(device, &features);
 
     b8 desired_properties = TRUE;

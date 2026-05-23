@@ -83,7 +83,7 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     required_extensions.reserve(32);
     required_extensions.push_back( VK_KHR_SURFACE_EXTENSION_NAME ); // Generic surface extension.
     // Get platform specific extensions.
-    platform_get_required_extension_names(required_extensions);
+    vulkan_platform_get_required_extension_names(required_extensions);
 
 #if defined(IBX_DEBUG)
     required_extensions.push_back( VK_EXT_DEBUG_UTILS_EXTENSION_NAME ); // Debug utilities.
@@ -109,9 +109,16 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     
     // Device creation
     if(!vulkan_device_create(&context)){
-        IBX_LOG_ERROR("Failed to create device.");
+        IBX_LOG_ERROR("Failed to create VkDevice.")
         return FALSE;
     }
+
+    if (!vulkan_platform_create_surface(plat_stat, &context))
+    {
+        IBX_LOG_ERROR("Failed to create VkSurface")
+        return FALSE; 
+    }
+
     
     IBX_LOG_INFO("Vulkan renderer initialized successfully.")
     return TRUE;
@@ -121,6 +128,8 @@ void vulkan_renderer_server_terminate(RendererServer *renderer_server)
 {
     IBX_LOG_DEBUG("Destroying Vulkan device...")
     vulkan_device_release(&context);
+    IBX_LOG_DEBUG("Destroying Vulkan surface...")
+    vkDestroySurfaceKHR(context.instance, context.surface, context.allocator); 
     IBX_LOG_DEBUG("Destroying Vulkan instance...")
     vkDestroyInstance(context.instance, context.allocator);
 }

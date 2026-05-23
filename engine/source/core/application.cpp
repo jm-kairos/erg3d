@@ -163,7 +163,7 @@ b8 application_on_event(u16 code, VOID_PTR sender, VOID_PTR listener_inst, event
     switch (code)
     {
         case EVENT_CODE_APPLICATION_QUIT:{
-            IBX_LOG_INFO("EVENT_CODE_APPLICATION_QUIT recieved, shutting down."); 
+            IBX_LOG_INFO("EVENT_CODE_APPLICATION_QUIT received, shutting down."); 
             app_state.is_running = FALSE;
             return TRUE;
         }
