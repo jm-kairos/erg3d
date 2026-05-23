@@ -1,12 +1,13 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include "core\asserts.h"
+#include "defines.h"
 
-#include "core\logger.h"
+#include <vulkan/vulkan.h>
 
 struct VulkanContext{
     VkInstance instance;
     VkAllocationCallbacks* allocator;
 };
 
-#define IBX_VULKAN_EVALUATE_ERROR(_result) if(result != VK_SUCCESS) { IBX_LOG_ERROR("vkCreateInstance failed with result: %u", result); return FALSE; } 
+#define IBX_VK_EVAL(_result) { IBX_ASSERT(_result) }

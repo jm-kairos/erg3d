@@ -1,5 +1,7 @@
 #include "vulkan_server.h"
 
+#include "core/logger.h"
+
 #include "renderer/renderer_types.h"
 #include "vulkan_platform.h"
 
@@ -32,8 +34,48 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
 
     // Process validation Layers in here.
 
-    create_instance_info.enabledLayerCount = 0;
-    create_instance_info.ppEnabledLayerNames = 0;
+    Vector(const char*) required_validation_layer_names = {};
+    u32 required_validation_layer_count = 0;
+
+#if defined(IBX_DEBUG) 
+    IBX_LOG_INFO("Vulkan validation layers enabled. Enumerating...")
+
+    // The list of validation layers required.
+    required_validation_layer_names.push_back( "VK_LAYER_KHRONOS_validation" );
+    required_validation_layer_count = required_validation_layer_names.size();
+
+    // Obtain a list of available validation layers.
+    u32 available_layer_count = 0;
+    IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, 0))
+    Vector(VkLayerProperties) available_layers = {};
+    available_layers.reserve(available_layer_count);
+    IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, available_layers.data()))
+
+    // Verify availability of all required layers.
+    for (size_t i = 0; i < required_validation_layer_count; ++i)
+    {
+        IBX_LOG_INFO("Searching for layer: %s...", required_validation_layer_names[i])
+        b8 found = FALSE;
+        for (size_t j = 0; j < available_layer_count; ++j)
+        {
+            if (strcmp(required_validation_layer_names[i], available_layers[j].layerName))
+            {
+                found = TRUE;
+                IBX_LOG_INFO("Found.")
+                break;
+            }
+        }
+        if (!found)
+        {
+            IBX_LOG_FATAL("Required validation layer is missing: %s", required_validation_layer_names[i]);
+            return FALSE;
+        }   
+    }
+    IBX_LOG_INFO("All required validation layers are present.")
+#endif
+
+    create_instance_info.enabledLayerCount = required_validation_layer_count;
+    create_instance_info.ppEnabledLayerNames = required_validation_layer_names.data();
 
     Vector(const char*) required_extensions =  {};
     required_extensions.reserve(32);
@@ -55,8 +97,7 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     create_instance_info.enabledExtensionCount = required_extensions.size();
     create_instance_info.ppEnabledExtensionNames = required_extensions.data();
 
-    VkResult result = vkCreateInstance(&create_instance_info, context.allocator, &context.instance);
-    IBX_VULKAN_EVALUATE_ERROR(result)
+    IBX_VK_EVAL(vkCreateInstance(&create_instance_info, context.allocator, &context.instance))
 
     IBX_LOG_INFO("Vulkan renderer initialized successfully.")
     return TRUE;
