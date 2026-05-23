@@ -109,7 +109,7 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     
     // Device creation
     if(!vulkan_device_create(&context)){
-        IBX_LOG_ERROR("Failed to create device!");
+        IBX_LOG_ERROR("Failed to create device.");
         return FALSE;
     }
     

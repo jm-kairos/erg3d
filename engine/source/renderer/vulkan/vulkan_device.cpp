@@ -5,19 +5,19 @@
 
 b8 vulkan_check_physical_device_suitability(const VkPhysicalDevice device);
 
-b8 vulkan_device_create(VulkanContext* context){
+b8 vulkan_select_physical_device(VulkanContext* context){
 
     u32 physical_devices_count = 0;
     IBX_VK_EVAL(vkEnumeratePhysicalDevices(context->instance, &physical_devices_count, 0));
 
-    Vector(VkPhysicalDevice) physical_devices = {};
+    Vector(VkPhysicalDevice) physical_devices;
     physical_devices.reserve(physical_devices_count);
+
     IBX_VK_EVAL(vkEnumeratePhysicalDevices(context->instance, &physical_devices_count, physical_devices.data()));
 
     IBX_LOG_INFO("Searching for a suitable Physical Device:");
     b8 found = FALSE;
-    size_t present_physical_devices_count = physical_devices.size();
-    for (size_t i = 0; i < present_physical_devices_count; ++i)
+    for (u32 i = 0; i < physical_devices_count; ++i)
     {
         const VkPhysicalDevice device = physical_devices[i];
         if (vulkan_check_physical_device_suitability(device))
@@ -31,10 +31,18 @@ b8 vulkan_device_create(VulkanContext* context){
 
     if (!found)
     {
-        IBX_LOG_FATAL("No suitable Physical devices found. Aborting Vulkan initialization.");
+        IBX_LOG_FATAL("No suitable Physical devices found.");
         return FALSE;
     }
 
+    return TRUE;
+}
+
+b8 vulkan_device_create(VulkanContext* context){
+    if (!vulkan_select_physical_device(context)){
+        return FALSE;
+    }
+    
     return TRUE;
 }
 
