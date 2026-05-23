@@ -4,12 +4,12 @@
 * Inspired by: https://andreleite.com/posts/2025/nstl/virtual-memory-arena-allocator/
 */
 
-// TODO: in cal_memory.h, include statistic concerning arena allocation.
+// TODO: in ibx_memory.h, include statistic concerning arena allocation.
 
 #include "defines.h"
 
 #include "core/logger.h"
-#include "cal_memory.h"
+#include "ibx_memory.h"
 
 struct arena_t;
 

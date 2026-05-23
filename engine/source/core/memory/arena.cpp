@@ -7,7 +7,7 @@
 
 ARENA_PTR arena_initialize(u64 reserve_size)
 {
-    ARENA_PTR out_arena = (ARENA_PTR)cal_memory_allocator(sizeof(arena_t), MEMORY_TAG_ARENA);
+    ARENA_PTR out_arena = (ARENA_PTR)ibx_memory_allocator(sizeof(arena_t), MEMORY_TAG_ARENA);
     if (!out_arena)
     {
         IBX_LOG_ERROR("Failed to allocate memory for arena !");
@@ -17,11 +17,11 @@ ARENA_PTR arena_initialize(u64 reserve_size)
     // Align reservation up to the nearest page size
     reserve_size = _aligment_to_nearest_page_size(reserve_size); 
 
-    VOID_PTR block = cal_memory_allocator_virtual_memory_reserve(reserve_size);
+    VOID_PTR block = ibx_memory_allocator_virtual_memory_reserve(reserve_size);
     if (!block)
     {
         IBX_LOG_ERROR("Failed to reserve virtual memory for arena !");
-        cal_memory_free(out_arena, sizeof(arena_t), MEMORY_TAG_ARENA);
+        ibx_memory_free(out_arena, sizeof(arena_t), MEMORY_TAG_ARENA);
         return 0;
     }
 
@@ -61,7 +61,7 @@ VOID_PTR arena_allocate(ARENA_PTR arena, u64 size)
         u64 size_to_commit = new_commit_target - arena->commited_size;
         VOID_PTR commit_start_adress = arena->base_ptr + arena->commited_size;
 
-        if (!cal_memory_allocator_virtual_memory_commit(commit_start_adress, size_to_commit))
+        if (!ibx_memory_allocator_virtual_memory_commit(commit_start_adress, size_to_commit))
         {
             IBX_LOG_ERROR("Unable to commit memory !");
             return 0;
@@ -83,8 +83,8 @@ void arena_reset(ARENA_PTR arena){
 
 // Release memory to the OS completely.
 void arena_terminate(ARENA_PTR arena){
-    cal_memory_virtual_free(arena->base_ptr, 0); // base_ptr is a pointer to the beginning of the entire block of memory. With size set to 0, the entire block is released. 
-    cal_memory_free(arena, sizeof(arena_t), MEMORY_TAG_ARENA);
+    ibx_memory_virtual_free(arena->base_ptr, 0); // base_ptr is a pointer to the beginning of the entire block of memory. With size set to 0, the entire block is released. 
+    ibx_memory_free(arena, sizeof(arena_t), MEMORY_TAG_ARENA);
 }
 
 

@@ -2,7 +2,7 @@
 
 #include "core/application.h"
 #include "core/logger.h"
-#include "core/memory/cal_memory.h"
+#include "core/memory/ibx_memory.h"
 #include "game_types.h"
 
 // Externally-defined function to create a game
@@ -15,7 +15,7 @@ extern b8 game_create(game* out_game);
  */
 int main(void){
 
-    cal_memory_initialize();
+    ibx_memory_initialize();
 
     game game_inst;
     if (!game_create(&game_inst))
@@ -42,7 +42,7 @@ int main(void){
         return 2; 
     }
 
-    cal_memory_terminate();
+    ibx_memory_terminate();
 
     return 0;
 }

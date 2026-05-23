@@ -1,6 +1,6 @@
 #include "core/input.h"
 #include "core/event.h"
-#include "core/memory/cal_memory.h"
+#include "core/memory/ibx_memory.h"
 #include "core/logger.h"
 #include "input.h"
 
@@ -41,8 +41,8 @@ void input_update(real dt){
     }
     
     // Copy current state to the previous state;
-    cal_memory_copy(&state.keyboard_previous, &state.keyboard_current, sizeof(keyboard_state_t));
-    cal_memory_copy(&state.mouse_previous, &state.mouse_current, sizeof(mouse_state_t));
+    ibx_memory_copy(&state.keyboard_previous, &state.keyboard_current, sizeof(keyboard_state_t));
+    ibx_memory_copy(&state.mouse_previous, &state.mouse_current, sizeof(mouse_state_t));
 }
 
 void input_process_key(keys key, b8 pressed){

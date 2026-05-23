@@ -3,7 +3,7 @@
 
 #include "logger.h"
 #include "platform/platform.h"
-#include "core/memory/cal_memory.h"
+#include "core/memory/ibx_memory.h"
 #include "core/memory/arena.h"
 #include "core/event.h"
 #include "core/input.h"
@@ -105,7 +105,7 @@ b8 application_run(){
 
     ARENA_PTR frame_arena = arena_initialize(1024 * 1024 * 64); // 64MB frame arena
     
-    IBX_LOG_INFO(cal_memory_get_memory_usage_string());
+    IBX_LOG_INFO(ibx_memory_get_memory_usage_string());
 
     while (app_state.is_running){
 

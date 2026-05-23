@@ -4,6 +4,7 @@
 
 #include "renderer/renderer_types.h"
 #include "vulkan_platform.h"
+#include "vulkan_device.h"
 
 #include "containers/vector.h" 
 #include "containers/string.h"
@@ -43,10 +44,11 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     // The list of validation layers required.
     required_validation_layer_names.push_back( "VK_LAYER_KHRONOS_validation" );
     required_validation_layer_count = required_validation_layer_names.size();
-
+    
     // Obtain a list of available validation layers.
     u32 available_layer_count = 0;
     IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, 0))
+    
     Vector(VkLayerProperties) available_layers = {};
     available_layers.reserve(available_layer_count);
     IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, available_layers.data()))
@@ -99,12 +101,28 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
 
     IBX_VK_EVAL(vkCreateInstance(&create_instance_info, context.allocator, &context.instance))
 
+#if defined(IBX_DEBUG)
+
+    // TODO: Implement a Vulkan Debugger.
+
+#endif
+    
+    // Device creation
+    if(!vulkan_device_create(&context)){
+        IBX_LOG_ERROR("Failed to create device!");
+        return FALSE;
+    }
+    
     IBX_LOG_INFO("Vulkan renderer initialized successfully.")
     return TRUE;
 }
 
 void vulkan_renderer_server_terminate(RendererServer *renderer_server)
 {
+    IBX_LOG_DEBUG("Destroying Vulkan device...")
+    vulkan_device_release(&context);
+    IBX_LOG_DEBUG("Destroying Vulkan instance...")
+    vkDestroyInstance(context.instance, context.allocator);
 }
 
 void vulkan_renderer_server_resized(RendererServer *renderer_server, u16 width, u16 height)

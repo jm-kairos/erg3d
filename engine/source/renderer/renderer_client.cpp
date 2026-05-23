@@ -3,13 +3,13 @@
 #include "renderer_server.h"
 
 #include "core/logger.h"
-#include "core/memory/cal_memory.h"
+#include "core/memory/ibx_memory.h"
 
 // Server render context.
 static THIS_RENDERER_SERVER_PTR renderer_server = { };
 
 b8 renderer_initialize(const char* app_name, platform_state* plat_state){
-    renderer_server = (RendererServer*)cal_memory_allocator(sizeof(RendererServer), MEMORY_TAG_RENDERER);
+    renderer_server = (RendererServer*)ibx_memory_allocator(sizeof(RendererServer), MEMORY_TAG_RENDERER);
     
     // TODO: this shall be configurable
     renderer_server_create(RENDERER_SERVER_TYPE_VULKAN, plat_state, renderer_server);
@@ -29,7 +29,7 @@ void renderer_terminate(){
     renderer_server->terminate(renderer_server);
     if (renderer_server)
     {
-        cal_memory_free(renderer_server, sizeof(RendererServer), MEMORY_TAG_RENDERER);
+        ibx_memory_free(renderer_server, sizeof(RendererServer), MEMORY_TAG_RENDERER);
         renderer_server = (RendererServer*)0;
     }
 }

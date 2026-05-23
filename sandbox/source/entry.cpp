@@ -2,7 +2,7 @@
 
 #include <entry.h>
 
-#include <core/memory/cal_memory.h>
+#include <core/memory/ibx_memory.h>
 
 // Define the function to create a game
 b8 game_create(game* out_game){
@@ -19,7 +19,7 @@ b8 game_create(game* out_game){
     out_game->on_resize = game_on_resize;
 
     // Create the game state.
-    out_game->state = cal_memory_allocator(sizeof(game_state), memory_tag::MEMORY_TAG_GAME);
+    out_game->state = ibx_memory_allocator(sizeof(game_state), memory_tag::MEMORY_TAG_GAME);
 
     return TRUE;
 }
