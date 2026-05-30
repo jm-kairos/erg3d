@@ -5,16 +5,22 @@
 #include "renderer/renderer_types.h"
 #include "vulkan_platform.h"
 #include "vulkan_device.h"
+#include "vulkan_swapchain.h"
+#include "vulkan_renderpass.h"
 
 #include "containers/vector.h" 
 #include "containers/string.h"
 
 #include "platform/platform.h"
 
-static VulkanContext context = {};
+static __VulkanContext context = {};
+
+i32 find_memory_index(u32 type_filter, u32 properties);
 
 b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char *app_name, platform_state *plat_stat)
 {  
+    context.find_memory_index = find_memory_index;
+
     // TODO: custom allocator
     context.allocator = 0;
 
@@ -47,11 +53,11 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     
     // Obtain a list of available validation layers.
     u32 available_layer_count = 0;
-    IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, 0))
+    VK_EVALUATE(vkEnumerateInstanceLayerProperties(&available_layer_count, 0))
     
     Vector(VkLayerProperties) available_layers = {};
     available_layers.reserve(available_layer_count);
-    IBX_VK_EVAL(vkEnumerateInstanceLayerProperties(&available_layer_count, available_layers.data()))
+    VK_EVALUATE(vkEnumerateInstanceLayerProperties(&available_layer_count, available_layers.data()))
 
     // Verify availability of all required layers.
     for (size_t i = 0; i < required_validation_layer_count; ++i)
@@ -99,7 +105,7 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
     create_instance_info.enabledExtensionCount = required_extensions.size();
     create_instance_info.ppEnabledExtensionNames = required_extensions.data();
 
-    IBX_VK_EVAL(vkCreateInstance(&create_instance_info, context.allocator, &context.instance))
+    VK_EVALUATE(vkCreateInstance(&create_instance_info, context.allocator, &context.instance))
 
 #if defined(IBX_DEBUG)
 
@@ -118,6 +124,32 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
         IBX_LOG_ERROR("Failed to create VkDevice.")
         return FALSE;
     }
+
+    // Create swapchain.
+    vulkan_swapchain_create(&context, 
+        context.framebuffer_width, 
+        context.framebuffer_height,
+        &context.swapchain);
+
+    ImageRenderArea render_area;
+    render_area.x = 0;
+    render_area.y = 0;
+    render_area.z = (f32)context.framebuffer_width;
+    render_area.w = (f32)context.framebuffer_height;
+
+    ClearColor clear_color;
+    clear_color.x = 0.1f;
+    clear_color.y = 0.1f;
+    clear_color.z = 0.1f;
+    clear_color.w = 1.0f;
+
+    vulkan_renderpass_create(
+        &context,
+        render_area,
+        clear_color,
+        1.0f,
+        0,
+        &context.main_render_pass);
     
     IBX_LOG_INFO("Vulkan renderer initialized successfully.")
     return TRUE;
@@ -125,6 +157,10 @@ b8 vulkan_renderer_server_initialize(RendererServer *renderer_server, const char
 
 void vulkan_renderer_server_terminate(RendererServer *renderer_server)
 {
+    IBX_LOG_DEBUG("Destroying Vulkan main render pass...")
+    vulkan_renderpass_destroy(&context, &context.main_render_pass);
+    IBX_LOG_DEBUG("Destroying Vulkan swapchain...")
+    vulkan_swapchain_destroy(&context, &context.swapchain);
     IBX_LOG_DEBUG("Destroying Vulkan device...")
     vulkan_device_release(&context);
     IBX_LOG_DEBUG("Destroying Vulkan surface...")
@@ -145,4 +181,21 @@ b8 vulkan_renderer_server_begin_frame(RendererServer *renderer_server, real dt)
 b8 vulkan_renderer_server_end_frame(RendererServer *renderer_server, real dt)
 {
     return b8();
+}
+
+i32 find_memory_index(u32 type_filter, u32 properties)
+{
+    VkPhysicalDeviceMemoryProperties memory_properties;
+    vkGetPhysicalDeviceMemoryProperties(context.device.chosen_gpu_device, &memory_properties);
+
+    for (u32 i = 0; i < memory_properties.memoryTypeCount; ++i)
+    {
+        if ((type_filter & (1 << i)) && (memory_properties.memoryTypes[i].propertyFlags & properties) == properties)
+        {
+            return i;
+        }
+    }
+
+    IBX_LOG_WARN("Failed to find suitable memory type for allocation. Type filter: %i, required properties: %i", type_filter, properties)
+    return -1;
 }

@@ -5,6 +5,7 @@
 
 #include "core/logger.h"
 #include "core/input.h"
+#include "core/event.h"
 
 #include <windows.h>
 #include <windowsx.h> // param input extraction
@@ -214,7 +215,7 @@ void vulkan_platform_get_required_extension_names(Vector(const char*)& ext_names
     ext_names_vector.push_back( "VK_KHR_win32_surface" );
 }
 
-b8 vulkan_platform_create_surface(platform_state * plat_state, VulkanContext * context){
+b8 vulkan_platform_create_surface(platform_state * plat_state, __VulkanContext * context){
 
     internal_state* state = (internal_state*)(plat_state->internal_state);
 
@@ -247,9 +248,11 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
         case WM_ERASEBKGND:
             // Notify the OS that erasing will be handled by the application to present flicker.
             return 1;
-        case WM_CLOSE:
-            // TODO: fire an event for the application to quit.
-            return 0;
+        case WM_CLOSE:{
+            event_context_t data = {};
+            event_fire(EVENT_CODE_APPLICATION_QUIT, 0, data);
+            return TRUE;
+        }
         case WM_DESTROY:{
             PostQuitMessage(0);
             return 0;

@@ -25,7 +25,7 @@ void logger_terminate(){
 
 }
 
-void logger_output(log_level level, const char* message, ...){
+void logger_output(ELogLevel level, const char* message, ...){
     // TODO: aim is to keep the number of file writes down, since writing to disk is generally slow.
     // So the goal is to output content is batches.
 

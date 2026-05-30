@@ -46,7 +46,7 @@ ibx__api__ b8 event_unregister(u16 code, VOID_PTR listener, PFN_on_event on_even
 ibx__api__ b8 event_fire(u16 code, VOID_PTR listener, event_context context);
 
 // System internal event codes. Application should use codes beyond 255.
-typedef enum system_event_code {
+typedef enum ESystemEventCode {
     EVENT_CODE_APPLICATION_QUIT = 0x01,
     EVENT_CODE_KEY_PRESSED = 0x02,
     EVENT_CODE_KEY_RELEASED = 0x03,
@@ -54,5 +54,5 @@ typedef enum system_event_code {
     EVENT_CODE_BUTTON_RELEASED = 0x05,
     EVENT_CODE_MOUSE_MOVED = 0x06,
     EVENT_CODE_MOUSE_WHEEL = 0x07
-} system_event_code;
+} ESystemEventCode;
 

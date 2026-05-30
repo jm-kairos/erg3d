@@ -19,7 +19,7 @@ b8 game_create(game* out_game){
     out_game->on_resize = game_on_resize;
 
     // Create the game state.
-    out_game->state = ibx_memory_allocator(sizeof(game_state), memory_tag::MEMORY_TAG_GAME);
+    out_game->state = ibx_memory_allocator(sizeof(game_state), EMemoryTag::MEMORY_TAG_GAME);
 
     return TRUE;
 }

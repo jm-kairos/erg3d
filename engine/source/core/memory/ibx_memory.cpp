@@ -59,7 +59,7 @@ void ibx_memory_virtual_free(VOID_PTR block, u64 size){
     platform_virtual_free(block, size);
 }
 
-VOID_PTR ibx_memory_allocator(u64 size, memory_tag tag)
+VOID_PTR ibx_memory_allocator(u64 size, EMemoryTag tag)
 {
     if (tag == MEMORY_TAG_UNKNOWN)
         IBX_LOG_WARN("ibxmem_alloc called using MEMORY_TAG_UNKOWN. Describe this allocation.")
@@ -74,7 +74,7 @@ VOID_PTR ibx_memory_allocator(u64 size, memory_tag tag)
     return(block);
 }
 
-void ibx_memory_free(VOID_PTR block, u64 size, memory_tag tag){   
+void ibx_memory_free(VOID_PTR block, u64 size, EMemoryTag tag){   
     if (tag == MEMORY_TAG_UNKNOWN)
         IBX_LOG_WARN("ibxmem_free called using MEMORY_TAG_UNKOWN. Describe this allocation.")
 

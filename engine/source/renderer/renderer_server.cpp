@@ -2,7 +2,7 @@
 
 #include "vulkan/vulkan_server.h"
 
-b8 renderer_server_create(renderer_server_types type, platform_state *plat_state, RendererServer *out_renderer_server)
+b8 renderer_server_create(ERendererServerTypes type, platform_state *plat_state, RendererServer *out_renderer_server)
 {
     // Fill RendererServer* object.
 

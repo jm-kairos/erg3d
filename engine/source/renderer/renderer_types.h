@@ -5,11 +5,11 @@
 #include "platform/platform.h"
 
 // Supported renderer backends.
-typedef enum renderer_server_types{
+typedef enum ERendererServerTypes{
     RENDERER_SERVER_TYPE_VULKAN,
     RENDERER_SERVER_TYPE_OPENGL,
     RENDERER_SERVER_TYPE_DIRECTX
-} renderer_server_types;
+} ERendererServerTypes;
 
 #define THIS_RENDERER_SERVER_PTR RendererServer*
 

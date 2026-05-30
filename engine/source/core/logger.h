@@ -14,19 +14,19 @@
 #define LOG_TRACE_ENABLED 0
 #endif
 
-typedef enum log_level {
+typedef enum ELogLevel {
     LOG_LEVEL_FATAL = 0,
     LOG_LEVEL_ERROR = 1,
     LOG_LEVEL_WARN  = 2,
     LOG_LEVEL_INFO = 3,
     LOG_LEVEL_DEBUG = 4,
     LOG_LEVEL_TRACE = 5
-} log_level;
+} ELogLevel;
 
 b8 logger_initialize();
 void logger_terminate();
 
-ibx__api__ void logger_output(log_level level, const char* message, ...);
+ibx__api__ void logger_output(ELogLevel level, const char* message, ...);
 
 // Logs a FATAL level message.
 #define IBX_LOG_FATAL(message, ...) logger_output(LOG_LEVEL_FATAL, message, ##__VA_ARGS__);
